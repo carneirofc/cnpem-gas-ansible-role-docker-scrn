@@ -1,0 +1,96 @@
+---
+gas_docker_scrn_settings_defaults: &gas_docker_scrn_settings_defaults
+  # Basler acA1300-75gm
+  BASLER_ACA1300_75GM_TELNET_PORT: ""
+  BASLER_ACA1300_75GM_IMAGE_VERSION: "3.2.0-socat-rc1-base-3.15-debian-9"
+  BASLER_ACA1300_75GM_INSTANCE: "Basler-BO-01D-DI-ScrnCam-1"
+  BASLER_ACA1300_75GM_AREA_PREFIX: "BO-01D:"
+  BASLER_ACA1300_75GM_DEVICE_PREFIX: "DI-ScrnCam-1:"
+  BASLER_ACA1300_75GM_SN: "22309751"
+  BASLER_ACA1300_75GM_HL_PREFIX: "BO-01D:DI-Scrn-1:"
+  BASLER_ACA1300_75GM_PLACEMENT:
+    CONSTRAINTS:
+      - node.hostname != CA-RaCtrl-CO-Srv-1
+      - node.hostname != CA-RaTim-CO-IOCSrv
+      - node.hostname != IA-14RaDiag03-CO-IOCSrv
+      - node.hostname != IA-16RaBbB-CO-IOCSrv
+      - node.hostname != IA-18RaDiag04-CO-IOCSrv
+      - node.hostname != IA-20RaDiag01-CO-IOCSrv-1
+      - node.hostname != IA-20RaDiag02-CO-IOCSrv-1
+      - node.hostname != LA-RaCtrl-CO-Srv-1
+      - node.hostname != TA-TiRack-CO-FWSrv-1
+  BASLER_ACA1300_75GM_AUTOSAVE_CONTAINER_DIR: "/opt/epics/startup/ioc/basler-acA1300-75gm-epics-ioc/iocBoot/iocBasleracA130075gm/autosave"
+  BASLER_ACA1300_75GM_AUTOSAVE_DIR: "/storage/common/autosave/IA-20RaDiag01-CO-IOCSrv-2"
+  # Galil DMC30017
+  DMC30017_TELNET_PORT: ""
+  DMC30017_IMAGE_VERSION: "v1.2.6-rc1-LNLS1-base-3.15-debian-9"
+  DMC30017_INSTANCE: "Galil-BO-01D-DI-ScrnCtrl-1"
+  DMC30017_AREA_PREFIX: "BO-01D:"
+  DMC30017_DEVICE_PREFIX: "DI-ScrnCtrl-1:"
+  DMC30017_DEVICE_IP: "BO-01D-DI-ScrnCtrl-1"
+  DMC30017_DEVICE_PORT: "5025"
+  DMC30017_VELO: "1.3"
+  DMC30017_VMAX: "1.4"
+  DMC30017_ACCL: "2"
+  DMC30017_BDST: "0"
+  DMC30017_BVEL: "0"
+  DMC30017_BACC: "0"
+  DMC30017_MRES: "0.0000390625"
+  DMC30017_SREV: "51200"
+  DMC30017_ERES: "0.0005"
+  DMC30017_DHLM: "90"
+  DMC30017_DLLM: "1"
+  DMC30017_OFF: "0"
+  DMC30017_UEIP: "yes"
+  DMC30017_RTRY: "5"
+  DMC30017_NTM: "yes"
+  DMC30017_MTRTYPE: "la-stepper"
+  DMC30017_MTRON: ""
+  DMC30017_EGU: "mm"
+  DMC30017_DEFAULT_HOMETYPE: "NC"
+  DMC30017_DEFAULT_LIMITTYPE: "NC"
+  DMC30017_AMP_GAIN: "1"
+  DMC30017_DIR: "pos"
+  DMC30017_ENC_TYPE: "normal-quad"
+  DMC30017_BISS_POOL: "no"
+  DMC30017_BISS_CLKDIV: "9"
+  DMC30017_BISS_DATA1: "33"
+  DMC30017_BISS_DATA2: "33"
+  DMC30017_BISS_ZEROPAD: "0"
+  DMC30017_BISS_INPUT: "off"
+  DMC30017_BISS_LEVEL: "low-low"
+  DMC30017_PLACEMENT:
+    CONSTRAINTS:
+      - node.hostname != CA-RaCtrl-CO-Srv-1
+      - node.hostname != LA-RaCtrl-CO-Srv-1
+      - node.hostname != TA-TiRack-CO-FWSrv-1
+  DMC30017_AUTOSAVE_CONTAINER_DIR: "/opt/epics/startup/ioc/galil-dmc30017-epics-ioc/iocBoot/iocGalilDmc30017/autosave"
+  DMC30017_AUTOSAVE_DIR: "/storage/common/autosave/IA-20RaDiag01-CO-IOCSrv-2"
+  # Screen"
+  SCREEN_TELNET_PORT: ""
+  SCREEN_IMAGE_VERSION: "v1.3.2-rc1-base-3.15-debian-9.13"
+  SCREEN_INSTANCE: "Screen-BO-01D-DI-Scrn-1"
+  SCREEN_AREA_PREFIX: "BO-01D:"
+  SCREEN_DEVICE_PREFIX: "DI-Scrn-1:"
+  SCREEN_MTR_CTRL_PREFIX: "BO-01D:DI-ScrnCtrl-1:"
+  SCREEN_CAM_PREFIX: "BO-01D:DI-ScrnCam-1:"
+  SCREEN_PLACEMENT:
+    CONSTRAINTS:
+      - node.hostname != CA-RaCtrl-CO-Srv-1
+      - node.hostname != CA-RaTim-CO-IOCSrv
+      - node.hostname != IA-14RaDiag03-CO-IOCSrv
+      - node.hostname != IA-16RaBbB-CO-IOCSrv
+      - node.hostname != IA-18RaDiag04-CO-IOCSrv
+      - node.hostname != IA-20RaDiag01-CO-IOCSrv-1
+      - node.hostname != IA-20RaDiag02-CO-IOCSrv-1
+      - node.hostname != LA-RaCtrl-CO-Srv-1
+      - node.hostname != TA-TiRack-CO-FWSrv-1
+  SCREEN_AUTOSAVE_CONTAINER_DIR: "/opt/epics/startup/ioc/screen-epics-ioc/iocBoot/iocScreen/autosave"
+  SCREEN_AUTOSAVE_DIR: "/storage/common/autosave/IA-20RaDiag01-CO-IOCSrv-2"
+
+  STACK_NAME: ""
+
+gas_docker_scrn_settings:
+  # AR Amplifier
+  - <<: *gas_docker_scrn_settings_defaults
+    STACK_NAME: "Scrn-BO-01D-1"

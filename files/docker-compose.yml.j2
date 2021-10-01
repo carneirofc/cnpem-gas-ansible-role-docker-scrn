@@ -1,0 +1,138 @@
+version: "{{ gas_docker_scrn_compose_file_version }}"
+x-defaults: &defaults
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "{{ gas_docker_scrn_logging_max_size }}"
+      max-file: "{{ gas_docker_scrn_logging_max_file }}"
+  networks:
+    - hostnet
+
+x-deploy: &deploy
+  replicas: 1
+  restart_policy:
+    condition: any
+
+networks:
+  hostnet:
+    external:
+      name: "host"
+
+services:
+  galil-dmc30017-epics-ioc:
+    <<: *defaults
+    image: dockerregistry.lnls-sirius.com.br/gas/galil-dmc30017-epics-ioc:{{ item.DMC30017_IMAGE_VERSION }}
+    container_name: galil-dmc30017-epics-ioc-{{ item.DMC30017_INSTANCE }}
+    command: [
+        '-t', '{{ item.DMC30017_TELNET_PORT }}',
+        '-i', '{{ item.DMC30017_DEVICE_IP }}',
+        '-p', '{{ item.DMC30017_DEVICE_PORT }}',
+        '-P', '{{ item.DMC30017_AREA_PREFIX }}',
+        '-R', '{{ item.DMC30017_DEVICE_PREFIX }}',
+        '-s', '{{ item.DMC30017_VELO }}',
+        '-x', '{{ item.DMC30017_VMAX }}',
+        '-a', '{{ item.DMC30017_ACCL }}',
+        '-d', '{{ item.DMC30017_BDST }}',
+        '-v', '{{ item.DMC30017_BVEL }}',
+        '-c', '{{ item.DMC30017_BACC }}',
+        '-r', '{{ item.DMC30017_MRES }}',
+        '-T', '{{ item.DMC30017_SREV }}',
+        '-e', '{{ item.DMC30017_ERES }}',
+        '-h', '{{ item.DMC30017_DHLM }}',
+        '-l', '{{ item.DMC30017_DLLM }}',
+        '-o', '{{ item.DMC30017_OFF }}',
+        '-u', '{{ item.DMC30017_UEIP }}',
+        '-y', '{{ item.DMC30017_RTRY }}',
+        '-n', '{{ item.DMC30017_NTM }}',
+        '-m', '{{ item.DMC30017_MTRTYPE }}',
+        '-k', '{{ item.DMC30017_MTRON }}',
+        '-g', '{{ item.DMC30017_EGU }}',
+        '-w', '{{ item.DMC30017_DEFAULT_HOMETYPE }}',
+        '-z', '{{ item.DMC30017_DEFAULT_LIMITTYPE }}',
+        '-G', '{{ item.DMC30017_AMP_GAIN }}',
+        '-D', '{{ item.DMC30017_DIR }}',
+        '-E', '{{ item.DMC30017_ENC_TYPE }}',
+        '-O', '{{ item.DMC30017_BISS_POOL }}',
+        '-C', '{{ item.DMC30017_BISS_CLKDIV }}',
+        '-A', '{{ item.DMC30017_BISS_DATA1 }}',
+        '-B', '{{ item.DMC30017_BISS_DATA2 }}',
+        '-Z', '{{ item.DMC30017_BISS_ZEROPAD }}',
+        '-I', '{{ item.DMC30017_BISS_INPUT }}',
+        '-L', '{{ item.DMC30017_BISS_LEVEL }}'
+    ]
+    volumes:
+      - type: bind
+        source: {{ item.DMC30017_AUTOSAVE_DIR }}
+        target: {{ item.DMC30017_AUTOSAVE_CONTAINER_DIR }}
+    deploy:
+      <<: *deploy
+      restart_policy:
+        condition: any
+{% if item.DMC30017_PLACEMENT is defined %}
+      placement:
+{%   if item.DMC30017_PLACEMENT.CONSTRAINTS is defined and item.DMC30017_PLACEMENT.CONSTRAINTS | length %}
+        constraints:
+{%     for item in item.DMC30017_PLACEMENT.CONSTRAINTS %}
+          - {{ item }}
+{%     endfor %}
+{%   endif %}
+{% endif %}
+
+  basler-aca1300-75gm-epics-ioc:
+    <<: *defaults
+    image: dockerregistry.lnls-sirius.com.br/gas/basler-aca1300-75gm-epics-ioc:{{ item.BASLER_ACA1300_75GM_IMAGE_VERSION }}
+    container_name: basler-aca1300-75gm-epics-ioc-{{ item.BASLER_ACA1300_75GM_INSTANCE }}
+    command: [
+        '-t', '{{ item.BASLER_ACA1300_75GM_TELNET_PORT }}',
+        '-s', '{{ item.BASLER_ACA1300_75GM_SN }}',
+        '-A', '{{ item.BASLER_ACA1300_75GM_HL_PREFIX }}',
+        '-P', '{{ item.BASLER_ACA1300_75GM_AREA_PREFIX }}',
+        '-R', '{{ item.BASLER_ACA1300_75GM_DEVICE_PREFIX }}'
+    ]
+    volumes:
+      - type: bind
+        source: {{ item.BASLER_ACA1300_75GM_AUTOSAVE_DIR }}
+        target: {{ item.BASLER_ACA1300_75GM_AUTOSAVE_CONTAINER_DIR }}
+    deploy:
+      <<: *deploy
+      restart_policy:
+        condition: any
+{% if item.BASLER_ACA1300_75GM_PLACEMENT is defined %}
+      placement:
+{%   if item.BASLER_ACA1300_75GM_PLACEMENT.CONSTRAINTS is defined and item.BASLER_ACA1300_75GM_PLACEMENT.CONSTRAINTS | length %}
+        constraints:
+{%     for item in item.BASLER_ACA1300_75GM_PLACEMENT.CONSTRAINTS %}
+          - {{ item }}
+{%     endfor %}
+{%   endif %}
+{% endif %}
+
+  screen-epics-ioc:
+    <<: *defaults
+    image: dockerregistry.lnls-sirius.com.br/gas/screen-epics-ioc:{{ item.SCREEN_IMAGE_VERSION }}
+    container_name: screen-epics-ioc-{{ item.SCREEN_INSTANCE }}
+    command: [
+        '-t', '{{ item.SCREEN_TELNET_PORT }}',
+        '-m', '{{ item.SCREEN_MTR_CTRL_PREFIX }}',
+        '-c', '{{ item.SCREEN_CAM_PREFIX }}',
+        '-P', '{{ item.SCREEN_AREA_PREFIX }}',
+        '-R', '{{ item.SCREEN_DEVICE_PREFIX }}'
+    ]
+    depends_on:
+      - galil-dmc30017-epics-ioc
+      - basler-aca1300-75gm-epics-ioc
+    volumes:
+      - type: bind
+        source: {{ item.SCREEN_AUTOSAVE_DIR }}
+        target: {{ item.SCREEN_AUTOSAVE_CONTAINER_DIR }}
+    deploy:
+      <<: *deploy
+{% if item.SCREEN_PLACEMENT is defined %}
+      placement:
+{%   if item.SCREEN_PLACEMENT.CONSTRAINTS is defined and item.SCREEN_PLACEMENT.CONSTRAINTS | length %}
+        constraints:
+{%     for item in item.SCREEN_PLACEMENT.CONSTRAINTS %}
+          - {{ item }}
+{%     endfor %}
+{%   endif %}
+{% endif %}

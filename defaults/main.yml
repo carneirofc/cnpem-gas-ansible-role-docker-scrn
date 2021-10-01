@@ -1,0 +1,5 @@
+---
+gas_docker_scrn_base_template_dir: ~/templates
+gas_docker_scrn_compose_file_version: "3.4"
+gas_docker_scrn_logging_max_file: "10"
+gas_docker_scrn_logging_max_size: "10m"
