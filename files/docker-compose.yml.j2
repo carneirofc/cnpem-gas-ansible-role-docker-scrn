@@ -84,6 +84,12 @@ services:
     container_name: basler-aca1300-75gm-epics-ioc-{{ item.BASLER_ACA1300_75GM_INSTANCE }}
     command: [
         '-t', '{{ item.BASLER_ACA1300_75GM_TELNET_PORT }}',
+{% if item.BASLER_ACA1300_75GM_HTTP_PORT is defined %}
+        '-H', '{{ item.BASLER_ACA1300_75GM_HTTP_PORT }}',
+{%   endif %}
+{% if item.BASLER_ACA1300_75GM_FFMPEG_PORT is defined %}
+        '-n', '{{ item.BASLER_ACA1300_75GM_FFMPEG_PORT }}',
+{%   endif %}
         '-s', '{{ item.BASLER_ACA1300_75GM_SN }}',
         '-A', '{{ item.BASLER_ACA1300_75GM_HL_PREFIX }}',
         '-P', '{{ item.BASLER_ACA1300_75GM_AREA_PREFIX }}',
